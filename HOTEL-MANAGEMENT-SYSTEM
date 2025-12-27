@@ -1,0 +1,239 @@
+-- Question - 1] The accounts team wants to check payments made via UPI to measure digital adoption.
+select * from payments where paymentmethod='upi';
+-- Question - 2] List all unique first names of customers for a duplicate check. 
+select distinct firstname from customers;
+-- Question - 3] Delete all rooms with Capacity = 1. 
+delete from rooms where capacity=1;
+-- Question - 4] Display each customer’s name and phone number together using CONCAT. 
+select concat(firstname,'',lastname,'-',phones) as customerscontact from customers;
+-- Question - 5] The booking office wants to see bookings where RoomID = 10 to check utilization of a specific room. 
+select * from booking where roomid=10;
+-- Question - 6] Identify rooms whose Capacity is greater than the average Capacity of all rooms.
+select avg(capacity) from rooms;
+select * from rooms where price >(select avg(capacity) from rooms);
+-- Question - 7] Create a VIEW StaffContact showing Staff FirstName, LastName, Role,Phone.  and
+create view staffcontact as select fistname,lastname,role,phone from staff;
+-- Question - 8] The receptionist wants to offer Suite rooms under ₹7000 to business travelers. 
+select * from rooms where roomtype='suite' and pricepernight < 7000;
+-- Question - 9] The admin wants to see email addresses sorted by LastName from the Customers table.
+select email,lastname from customers order by lastname ;
+-- Question - 10] Show staff full names combined into one column.
+select concat(firstname,' ',lastname) as fullname from staff;
+-- Question - 11] Display all payment details in one line using CONCAT_WS.
+select('|',paymentid,bookingid,paymentmethod,amount,paymentsdate) as paymentdetails from payments;
+-- Question - 12] The hotel wants to display the 2 most expensive rooms for VIP guests.
+select * from rooms order by pricepernight desc limit 2;
+-- Question - 13] Show each BookingID with its CheckIn and CheckOut dates combined.
+select concat(bookingid,checkin,checkout) as bookingdetails from booking;
+-- Question - 14] Finance wants to calculate the average Amount per PaymentMethod.
+select paymentmethod, avg(amounts) as avgamaount from payments group by paymentmethod;
+-- Question - 15] The analytics team wants to find the city where average CustomerID is greater than 50.
+select city,avg(customerid) as avgcustomerid from customers group by city having avg(customerid) > 50;
+-- Question - 16] Find bookings where TotalAmount exceeds the average TotalAmount. (Bookings subquery)
+select avg(totalamount) from amounts;
+select * from amounts where totalamount >(select avg(totalamount) from amounts);
+-- Question - 17] Display the last 2 added rooms from the Rooms table.
+select * from rooms order by roomid desc limit 2;
+-- Question - 18] The cashier wants a report of payments where Amount < ₹1500 for small transactions.
+select * from payments where amount < 1500;
+-- Question - 19] Management wants to list all customers who have made more than 5 bookings.
+select customerid,count(*) as totalbooking from booking group by customersid having count(*) > 5 ;
+-- Question - 20] Identify customers who live in the same city. (Customers self join).
+select c1.customerid, c1.firstname , c1.lastname, c1.city from customers c1 join customers c2 on c1.city=c2.city and c1.customersid < c2.customerid order by c1.city ;
+-- Question - 21] Show the total revenue handled by each StaffID
+select staffid,sum(totalamount) as totalrevenue from booking group by staffid;
+-- Question - 22] The manager wants to see all customers from Mumbai to check city-wise marketing campaigns.
+select * from customers where city ='mumbai';
+-- Question - 23] Display the 3 lowest booking amounts.
+select totalamount from booking order by totalamount asc limit 3;
+-- Question - 24] Insert 5 new room records with type, price, and capacity into the Rooms table.
+insert into rooms(roomtype,pricepernight,capacity) values ('single',2000,1) ,
+ ('double',3000,2), ('family',5000,3), ('suite',8000,3), ('deluxe',6000,2);
+-- Question - 25] Show all unique CustomerIDs from bookings.
+ select distinct customerid from booking;
+ -- Question - 26] Create a trigger to automatically delete a payment when its corresponding  booking is deleted. 
+ create trigger delete_payment_after_booking after delete on bookings for each row delete from payments where bookingid=old.bookingid;
+ -- Question - 27] The marketing team wants to update the FirstName of CustomerID = 30 toto rahul
+ update customers set firstname='rahul' where customerid=30;
+ -- Question - 28] List all bookings ordered by CheckInDate. 
+ select * from booking order by checkindate;
+ -- Question - 29] Show all rooms where capacity is greater than 2
+ select * from rooms where capacity > 2 ;
+ -- Question - 30] List staff emails ordered by their roles.
+ select emails from staff order by role;
+ -- Question - 31] Display each customer’s full name and city using CONCAT_WS.
+ select concat_ws(fistname,' ',lastname,'-',city) from customers;
+ -- Question - 32] Show the first 4 customers’ full names only.
+ select concat(firstname,lastname) as fullname from customer limit 3;
+ -- Question - 33] Show each staff’s role with their full name. 
+ select role,concat(firstname,' ',lastname) as fullname from staff;
+--  Question - 34] Management wants to find the average StaffID per role
+ select role,avg(staffid) from staffs group by role ;
+ -- Question - 35] List all bookings handled by StaffID = 2. 
+ select * from bookings where staffid =2;
+ -- Question - 36] Display the first 3 staff alphabetically by their first names.
+ select * from staff order by firstname limit 3;
+ -- Question - 37] The front desk manager wants to see customers where FirstName = 'Amit' AND City = 'Nagpur' for personal attention.
+ select * from customers where firstname='amit' and city ='nagpur';
+ -- Question - 38] Show all unique payment methods in descending order. 
+ select distinct paymentsmethod from payments order by paymentsmethod desc;
+ -- Question - 39] Insert 5 staff members into the Staff table with their role, phone, and email. 
+ insert into staff (firstname,lastname,role,phone,email) values (('Amit', 'Sharma', 'Manager', '9876543210', 'amit@hotel.com'),
+('Priya', 'Patel', 'Receptionist', '9123456789', 'priya@hotel.com'),
+('Rahul', 'Verma', 'Chef', '9988776655', 'rahul@hotel.com'),
+('Neha', 'Singh', 'Housekeeping', '9090909090', 'neha@hotel.com'),
+('Vikas', 'Mehta', 'Waiter', '9012345678', 'vikas@hotel.com')
+);
+-- Question - 40] The hotel manager wants to review bookings where CheckInDate is after '202401-01' to analyze recent occupancy. 
+select * from booking where checkindate > '2024-01-01';
+-- Question - 41] List all customers whose FirstName is 'Rahul' for a loyalty program
+select * from customer where firstname='rahul';
+-- Question - 42] Show all unique room types offered by the hotel.
+select distinct roomtypes from rooms;
+-- Question - 43] Identify customers who spent more than 50,000 in total. 
+select customerid, sum(totalamount) as totalspent from booking group by customerid having sum(totalamount) >50000;
+-- Question - 44] Delete all customers from the city 'TestCity'
+delete from customers where city='testcity';
+-- Question - 45] Find rooms that have the same PricePerNight. (Rooms self join)
+select r1.roomid,r1.pricepernight from rooms r1 join rooms r2 on r1.pricepernight = r2.pricepernight and r1.roomid < r2.roomid;
+-- Question - 46] The manager wants to see staff whose Email ends with '@tcs.in' for corporate tieusp.
+select * from staff where email like '%@tcs.in';
+-- Question - 47] The analytics team wants to list all cities where maximum CustomerID is more than 100.
+select city from customers group by city having max(customerid )>100;
+-- Question - 48] Show all unique capacities in descending order. 
+select distinct capacity from rooms order by  capacity desc;
+-- Question - 49] List staff working as Managers. 
+select * from staff where role='manager';
+-- Question - 50] Display each payment’s ID, Method, Amount in one line.
+select concat(paymentid,'|',paymentmethod,'|',amount) as paymentinfo from payments;
+-- Question - 51] Show the first 4 payments only. 
+select * from payments limit 4;
+-- Question - 52] The hotel manager wants to review rooms where PricePerNight is between ₹2000 and ₹4000 to offer discounts.
+select * from rooms where pricepernight between 2000 and 4000;
+-- Question - 53] List all bookings ordered by CheckInDate. 
+select * from booking order by checkindate ;
+-- Question - 54] Display all unique CustomerIDs from bookings.
+select distinct customerid from booking;
+-- Question - 55] The hotel manager wants to add new customer details. Insert 5 records with full details into the Customers table. 
+insert into customers(customerid,firstname,lastname,city,phone,email) values (101,'Amit','Sharma','Mumbai','9876543210','amit@gmail.com'),
+(102,'Neha','Patil','Pune','9876543222','neha@gmail.com'),
+(103,'Rahul','Verma','Delhi','9876543333','rahul@gmail.com'),
+(104,'Sneha','Joshi','Nagpur','9876543444','sneha@gmail.com'),
+(105,'Karan','Mehta','Ahmedabad','9876543555','karan@gmail.com');
+-- Question - 56] Show the last 2 staff hired.
+select * from staffs order by staffid desc limit 2;
+-- Question - 57] Identify rooms with PricePerNight higher than the maximum PricePerNight of rooms with Capacity = 2. (Rooms subquery)
+select max(pricepernight) from rooms where capacity =2;
+select * from rooms where pricepernight > (select max(pricepernight) from rooms where capacity =2);
+-- Question - 58] The HR team wants to see staff whose Role is not 'Chef' for role reallocation. 
+select * from staff where role != 'chef';
+-- Question - 59] Show all unique cities in descending order from the Customers table.
+select distinct city from customer order by city desc;
+-- Question - 60] Display the phone number of the Waiter only
+select  phonenumber from staff where role ='waiter';
+-- Question - 61] Display the last 2 bookings in the table. 
+select * from booking order by bookingid desc limit 2;
+-- Question - 62] The marketing team wants to see customers living in Delhi or Chennai for
+select * from cutomers where city in ('delhi','chennai');
+-- Question - 63] Show all rooms where RoomType != 'Family' to plan renovations.
+select * from rooms where roomtype <> 'family';
+-- Question - 64] List staff emails ordered by their roles.
+select email,role from staff order by role;
+-- Question - 65] Display all unique payment methods. 
+select distinct paymeentmethod from payments;
+-- Question - 66] The receptionist wants a list of customers whose Phone starts with '98' for mobile offers
+SELECT * FROM Customers WHERE Phone LIKE '98%';
+-- Question - 67] Show the 3 cheapest rooms available for budget travelers.
+select * from rooms order by pricepernight asc limit 3;
+-- Question - 68] Display the last 2 payments.
+select * from payments order by paymentid desc limit 2;
+-- Question - 69] Management wants to know which unique cities customers come from
+select distinct city from customers;
+-- Question - 70] List all bookings where TotalAmount > 5000.
+select * from booking where totalamount > 5000;
+-- Question - 71] Display each staff’s Role with their Email in one column.
+select concat(role,' ',email) as role_email from staff;
+-- Question - 72] Show the first 4 staff full names. 
+SELECT CONCAT(FirstName, ' ', LastName) AS FullName FROM Staff LIMIT 4;
+-- Question - 73] Find bookings where TotalAmount is greater than all bookings made by CustomerID = 10
+SELECT * FROM Bookings WHERE TotalAmount > (SELECT MAX(TotalAmount) FROM Bookings WHERE CustomerID = 10);
+-- Question - 74] List rooms with capacity >= 3 for family bookings
+select * from rooms where capacity >= 3;
+-- Question - 75] Display the RoomType and Price of only Suite rooms.
+select roomtype , pricepernight from rooms where roomtype = 'suite';
+-- Question - 76] The cashier wants to see payments with Amount between ₹2000 and ₹7000 for mid-range billing checks.
+SELECT * FROM Payments WHERE Amount BETWEEN 2000 AND 7000;
+-- Question - 77] Insert 5 booking records into the Bookings table with all details. 
+INSERT INTO Bookings (BookingID, CustomerID, RoomID, StaffID, CheckInDate, CheckOutDate, TotalAmount)
+VALUES
+(201, 5, 12, 3, '2024-03-01', '2024-03-05', 8000),
+(202, 8, 15, 4, '2024-03-02', '2024-03-06', 9000),
+(203, 12, 18, 2, '2024-03-04', '2024-03-08', 12000),
+(204, 14, 20, 1, '2024-03-06', '2024-03-10', 15000),
+(205, 16, 22, 5, '2024-03-08', '2024-03-12', 7000);
+
+-- Question - 78] Display the 3 lowest payments made by customers. 
+SELECT * FROM Payments ORDER BY Amount ASC LIMIT 3;
+-- Question - 79] Show each booking’s BookingID with TotalAmount using CONCAT
+SELECT CONCAT(BookingID, ' - ₹', TotalAmount) AS Booking_Amount FROM Bookings;
+-- Question - 80] Show all unique RoomIDs in descending order.
+SELECT DISTINCT RoomID FROM Bookings ORDER BY RoomID DESC;
+-- Question - 81] Display each room’s RoomType and Price using CONCAT_WS.
+SELECT CONCAT_WS(' | ', RoomType, PricePerNight) AS Room_Details FROM Rooms;
+-- Question - 82] The admin wants to delete all bookings handled by StaffID = 3. 
+DELETE FROM Bookings WHERE StaffID = 3;
+-- Question - 83] Show customers whose FirstName length > 5 characters for a name-pattern 
+SELECT * FROM Customers WHERE LENGTH(FirstName) > 5;
+-- Question - 84] Show all unique roles available in the hotel.
+select distinct role from staff;
+-- Question - 85] List all rooms where capacity is greater than 2.
+SELECT * FROM Rooms WHERE Capacity > 2;
+-- Question - 86] Display each payment’s ID with Amount using CONCAT
+SELECT CONCAT(PaymentID, ' - ₹', Amount) AS Payment_Info FROM Payments;
+-- Question - 87] List all Card payments from the Payments table. 
+SELECT * FROM Payments WHERE PaymentMethod = 'Card';
+-- Question - 88] Delete all customers whose Email ends with '@test.com' as invalid.
+DELETE FROM Customers WHERE Email LIKE '%@test.com';
+-- Question - 89] The hotel manager wants to review bookings where CheckOutDate before '202312-31' to measure old occupancy.
+SELECT * FROM Bookings WHERE CheckOutDate < '2023-12-31';
+-- Question - 90] The front office manager needs to list rooms with capacity = 2 for couples
+SELECT * FROM Rooms WHERE Capacity = 2;
+-- Question - 91] Show all unique capacities in descending order. 
+SELECT DISTINCT Capacity FROM Rooms ORDER BY Capacity DESC;
+-- Question - 92] The operations team wants to find the minimum TotalAmount in bookings
+SELECT MIN(TotalAmount) AS Min_TotalAmount FROM Bookings;
+-- Question - 93] Display all rooms by capacity in ascending order
+SELECT * FROM Rooms ORDER BY Capacity ASC;
+-- Question - 94] Show each booking’s BookingID with TotalAmount using CONCAT.
+SELECT CONCAT(BookingID, ' - ₹', TotalAmount) AS Booking_Info FROM Bookings;
+-- Question - 95] The operations head wants to see rooms with Capacity = 4 AND PricePerNight > ₹6000 for premium family packages. 
+SELECT * FROM Rooms WHERE Capacity = 4 AND PricePerNight > 6000;
+-- Question - 96] Show staff full names combined into one column. 
+SELECT CONCAT(FirstName, ' ', LastName) AS FullName FROM Staff;
+-- Question - 97] The accounts team wants to see bookings where the TotalAmount is greater than ₹10,000 to track high-value customers. 
+SELECT * FROM Bookings WHERE TotalAmount > 10000;
+-- Question - 98] Show all unique payment methods in descending order.
+SELECT DISTINCT PaymentMethod FROM Payments ORDER BY PaymentMethod DESC;
+-- Question - 99] List staff members who share the same Role. (Staff self join)
+SELECT s1.StaffID, s1.FirstName, s1.Role FROM Staff s1
+JOIN Staff s2 ON s1.Role = s2.Role AND s1.StaffID <> s2.StaffID;
+-- Question - 100] Show customer first name, last name, and TotalAmount of their bookings using JOIN between Customers and Bookings. 
+SELECT c.FirstName, c.LastName, b.TotalAmount FROM Customers c
+JOIN Bookings b ON c.CustomerID = b.CustomerID;
+-- Question - 101] Display the first 4 bookings only
+SELECT * FROM Bookings LIMIT 4;
+-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
